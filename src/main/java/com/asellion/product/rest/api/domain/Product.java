@@ -1,6 +1,7 @@
 package com.asellion.product.rest.api.domain;
 
 import lombok.Data;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -25,7 +26,7 @@ public class Product implements Serializable {
     private double currentPrice;
 
     @Column(name = "LASTUPDATE")
+    @UpdateTimestamp
     private LocalDateTime lastUpdate;
-
 
 }
