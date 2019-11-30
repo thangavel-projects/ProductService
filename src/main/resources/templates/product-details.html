@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Asellion Product Details</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+</body>
+<table bgcolor="#1ed9d6" border="1">
+
+    <tr th:each="product: ${products}">
+        <td th:text="${product.id}"></td>
+        <td th:text="${product.name}"></td>
+        <td th:text="${product.currentPrice}"></td>
+        <td th:text="${product.lastUpdate}"></td>
+    </tr>
+</table>
+</html>

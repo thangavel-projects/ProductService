@@ -1,14 +1,13 @@
 package com.asellion.product.rest.api.contoller;
 
-import com.asellion.product.rest.api.dto.ProductDto;
+import com.asellion.product.rest.api.exception.ProductNotFoundException;
 import com.asellion.product.rest.api.service.ProductService;
-import org.springframework.stereotype.Controller;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Map;
-
-@Controller
+@RestController
 public class ProductServiceController {
 
     private ProductService productService;
@@ -17,10 +16,8 @@ public class ProductServiceController {
         this.productService = productService;
     }
 
-    @GetMapping("/api/view/product-details")
-    public String displayProductDetails(Map<String, List<ProductDto>> model) {
-        model.put("products", productService.getAllProducts());
-        return "product-details";
-
+    @GetMapping(value = "/api/product-details", produces = "application/json")
+    public ResponseEntity<String> getAllProducts() throws JsonProcessingException, ProductNotFoundException {
+        return productService.getAllProducts();
     }
 }
