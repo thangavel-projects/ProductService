@@ -4,15 +4,13 @@ import com.asellion.product.rest.api.domain.Product;
 import com.asellion.product.rest.api.dto.ProductDto;
 import com.asellion.product.rest.api.exception.ProductNotFoundException;
 import com.asellion.product.rest.api.repository.ProductRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
@@ -21,12 +19,17 @@ public class ProductServiceImpl implements ProductService {
 
     private ProductRepository productRepository;
 
+    // Thread Safe Object Writer
+    private static final ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
+    @Autowired
+    private ModelMapper mapper;
+
     public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
     @Override
-    public List<ProductDto> getAllProductsDetails() {
+    public List<ProductDto> getAllProducts() {
         List<Product> products = productRepository.findAll();
         return products.stream()
                 .map(product -> new ProductDto(product.getId(), product.getName(),
@@ -35,27 +38,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ResponseEntity<String> getAllProducts() throws JsonProcessingException, ProductNotFoundException {
-        List<Product> products = productRepository.findAll();
-        ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        if (!products.isEmpty()) {
-            return new ResponseEntity<>(writer.writeValueAsString(products), HttpStatus.OK);
-        }
-        throw new ProductNotFoundException("No Records Available!");
+    public ProductDto findProductById(int id) throws ProductNotFoundException {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Product Not Found for " + id));
+        return mapper.map(product, ProductDto.class);
     }
 
     @Override
-    public Optional<ProductDto> findProductById(int id) {
-        return Optional.empty();
-    }
-
-    @Override
-    public void updateProductById(int id) {
-
-    }
-
-    @Override
-    public void save(ProductDto productDto) {
-
+    public void saveProduct(ProductDto productDto) {
+        Product product = mapper.map(productDto, Product.class);
+        productRepository.save(product);
     }
 }

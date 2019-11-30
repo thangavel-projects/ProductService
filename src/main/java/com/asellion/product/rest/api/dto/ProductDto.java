@@ -2,12 +2,14 @@ package com.asellion.product.rest.api.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class ProductDto implements Serializable {
 
     private static final long serialVersionUID = 6911246061642650898L;
