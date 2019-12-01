@@ -21,8 +21,10 @@ public class ProductServiceImpl implements ProductService {
 
     // Thread Safe Object Writer
     private static final ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
+
     @Autowired
     private ModelMapper mapper;
+
 
     public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;

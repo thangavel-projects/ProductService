@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -27,25 +26,25 @@ public class ProductServiceController {
 
     @GetMapping(value = "/products", produces = "application/json")
     public ResponseEntity<String> getAllProducts() throws JsonProcessingException, ProductNotFoundException {
-        List<ProductDto> allProducts = productService.getAllProducts();
+        var allProducts = productService.getAllProducts();
         return new ResponseEntity<>(writer.writeValueAsString(allProducts), HttpStatus.OK);
     }
 
     @GetMapping(value = "/products/{id}", produces = "application/json")
     public ResponseEntity<String> getProductsById(@PathVariable int id) throws JsonProcessingException,
             ProductNotFoundException {
-        ProductDto productDto = productService.findProductById(id);
+        var productDto = productService.findProductById(id);
         return new ResponseEntity<>(writer.writeValueAsString(productDto), HttpStatus.OK);
 
     }
 
     @PutMapping(value = "/products/{id}", consumes = "application/json")
-    public ResponseEntity<String> updateProductDetails(@PathVariable int id, @Valid @RequestBody ProductDto productDto)
+    public ResponseEntity<String> updateProductDetails(@PathVariable int id, @Valid @RequestBody ProductDto productPayload)
             throws JsonProcessingException, ProductNotFoundException {
-        ProductDto productDtoById = productService.findProductById(id);
-        productDtoById.setName(productDto.getName());
-        productDtoById.setCurrentPrice(productDto.getCurrentPrice());
-        productService.saveProduct(productDtoById);
+        var productDto = productService.findProductById(id);
+        productDto.setName(productPayload.getName());
+        productDto.setCurrentPrice(productPayload.getCurrentPrice());
+        productService.saveProduct(productDto);
         return new ResponseEntity<>(writer.writeValueAsString("The product details updated for [ " + id + " ]"), HttpStatus.OK);
     }
 

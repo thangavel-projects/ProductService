@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ProductService {
 
-    List<ProductDto> getAllProducts() throws JsonProcessingException, ProductNotFoundException;
+    List<ProductDto> getAllProducts();
 
     ProductDto findProductById(int id) throws JsonProcessingException, ProductNotFoundException;
 

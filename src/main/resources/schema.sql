@@ -4,3 +4,9 @@ CREATE TABLE PRODUCT (
   currentPrice  DOUBLE NOT NULL,
   lastUpdate    TIMESTAMP NOT NULL
 );
+
+CREATE TABLE USER_DETAILS(
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    userName    VARCHAR(50) NOT NULL,
+    password    VARCHAR(150) NOT NULL
+);
