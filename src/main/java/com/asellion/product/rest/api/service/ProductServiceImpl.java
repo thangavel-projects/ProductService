@@ -4,8 +4,6 @@ import com.asellion.product.rest.api.domain.Product;
 import com.asellion.product.rest.api.dto.ProductDto;
 import com.asellion.product.rest.api.exception.ProductNotFoundException;
 import com.asellion.product.rest.api.repository.ProductRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,9 +17,6 @@ import static java.util.stream.Collectors.toList;
 public class ProductServiceImpl implements ProductService {
 
     private ProductRepository productRepository;
-
-    // Thread Safe Object Writer
-    private static final ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
     @Autowired
     private ModelMapper mapper;

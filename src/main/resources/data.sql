@@ -5,4 +5,4 @@ INSERT INTO PRODUCT (id, name, currentPrice, lastUpdate) VALUES
   (default, 'PlueOne',   856.00, CURRENT_TIMESTAMP());
 
 INSERT INTO USER_DETAILS (id, userName, password) VALUES
-   (default, 'asellionUser','$2a$10$dlD041rKNn5AnWF54wXTyezG9Fhsz/crz77iqMj3iUyGLeVQtcjKK');
+   (default, 'asellion','$2a$10$slYQmyNdGzTn7ZLBXBChFOC9f6kFjAqPhccnP6DxlWXx2lPk1C3G6');
