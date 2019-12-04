@@ -11,12 +11,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.concurrent.locks.StampedLock;
 
 @RestController
 @RequestMapping("/api")
 public class ProductServiceController {
 
     private static final ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
+    private final StampedLock stampedLock = new StampedLock();
 
     private ProductService productService;
 
@@ -26,32 +28,51 @@ public class ProductServiceController {
 
     @GetMapping(value = "/products", produces = "application/json")
     public ResponseEntity<String> getAllProducts() throws JsonProcessingException, ProductNotFoundException {
-        var allProducts = productService.getAllProducts();
-        return new ResponseEntity<>(writer.writeValueAsString(allProducts), HttpStatus.OK);
+        long stamp = stampedLock.readLock();
+        try {
+            var allProducts = productService.getAllProducts();
+            return new ResponseEntity<>(writer.writeValueAsString(allProducts), HttpStatus.OK);
+        } finally {
+            stampedLock.unlock(stamp);
+        }
     }
 
     @GetMapping(value = "/products/{id}", produces = "application/json")
     public ResponseEntity<String> getProductsById(@PathVariable int id) throws JsonProcessingException,
             ProductNotFoundException {
-        var productDto = productService.findProductById(id);
-        return new ResponseEntity<>(writer.writeValueAsString(productDto), HttpStatus.OK);
-
+        long stamp = stampedLock.readLock();
+        try {
+            var productDto = productService.findProductById(id);
+            return new ResponseEntity<>(writer.writeValueAsString(productDto), HttpStatus.OK);
+        } finally {
+            stampedLock.unlock(stamp);
+        }
     }
 
     @PutMapping(value = "/products/{id}", consumes = "application/json")
     public ResponseEntity<String> updateProductDetails(@PathVariable int id, @Valid @RequestBody ProductDto productPayload)
             throws JsonProcessingException, ProductNotFoundException {
-        var productDto = productService.findProductById(id);
-        productDto.setName(productPayload.getName());
-        productDto.setCurrentPrice(productPayload.getCurrentPrice());
-        productService.saveProduct(productDto);
-        return new ResponseEntity<>(writer.writeValueAsString("The product details updated for [ " + id + " ]"), HttpStatus.OK);
+        long stamp = stampedLock.writeLock();
+        try {
+            var productDto = productService.findProductById(id);
+            productDto.setName(productPayload.getName());
+            productDto.setCurrentPrice(productPayload.getCurrentPrice());
+            productService.saveProduct(productDto);
+            return new ResponseEntity<>(writer.writeValueAsString("The product details updated for [ " + id + " ]"), HttpStatus.OK);
+        }finally {
+            stampedLock.unlock(stamp);
+        }
     }
 
     @PostMapping(value = "/products", consumes = "application/json")
     public ResponseEntity<String> createProduct(@Valid @RequestBody ProductDto productDto) throws JsonProcessingException {
-        productService.saveProduct(productDto);
-        return new ResponseEntity<>(writer.writeValueAsString("The product resource created for [ " + productDto.getName() + " ]"),
-                HttpStatus.CREATED);
+        long stamp = stampedLock.writeLock();
+        try {
+            productService.saveProduct(productDto);
+            return new ResponseEntity<>(writer.writeValueAsString("The product resource created for [ " + productDto.getName() + " ]"),
+                    HttpStatus.CREATED);
+        }finally {
+            stampedLock.unlock(stamp);
+        }
     }
 }
