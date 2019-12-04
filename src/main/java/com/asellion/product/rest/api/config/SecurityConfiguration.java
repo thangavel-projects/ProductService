@@ -62,11 +62,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeRequests()
-                .antMatchers("/")
+                .antMatchers("/**")
                 .permitAll()
                 .and()
                 .authorizeRequests()
                 .antMatchers("/console/**")
+                .permitAll()
+                .antMatchers("/instances/**")
+                .permitAll()
+                .antMatchers("/actuator/**")
                 .permitAll();
 
         httpSecurity
@@ -79,6 +83,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authenticated()
                 .and()
                 .exceptionHandling()
+
                 .authenticationEntryPoint(securityEntryPoint)
                 .and()
                 .sessionManagement()
