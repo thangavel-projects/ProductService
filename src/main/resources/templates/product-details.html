@@ -4,16 +4,17 @@
     <title>Asellion Product Details</title>
     <meta charset="UTF-8">
 </head>
-<body>
-
-</body>
 <table bgcolor="#d6d4d4" border="1">
-
-    <tr th:each="product: ${products}">
-        <td th:text="${product.id}"></td>
-        <td th:text="${product.name}"></td>
-        <td th:text="${product.currentPrice}"></td>
-        <td th:text="${product.lastUpdate}"></td>
-    </tr>
+    <div th:if="${not #lists.isEmpty(products)}">
+        <tr th:each="product: ${products}">
+            <td th:text="${product.id}"></td>
+            <td th:text="${product.name}"></td>
+            <td th:text="${product.currentPrice}"></td>
+            <td th:text="${product.lastUpdate}"></td>
+        </tr>
+    </div>
+    <div th:if="${#lists.isEmpty(products)}">
+        <div th:text=" 'No Records Found!' ">No Records Found!</div>
+    </div>
 </table>
 </html>
