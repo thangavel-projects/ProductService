@@ -9,9 +9,16 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.concurrent.locks.StampedLock;
 
 @RestController
@@ -29,11 +36,11 @@ public class ProductServiceController {
     }
 
     @GetMapping(value = "/products", produces = "application/json")
-    public ResponseEntity<String> getAllProducts() throws JsonProcessingException, ProductNotFoundException {
+    public ResponseEntity<String> getAllProducts() throws JsonProcessingException {
         log.info("Started fetching all products from DB!");
         long stamp = stampedLock.readLock();
         try {
-            var allProducts = productService.getAllProducts();
+            var allProducts = getProducts();
             log.info("Retrieval of all products success and returned {} products", allProducts.size());
             return new ResponseEntity<>(writer.writeValueAsString(allProducts), HttpStatus.OK);
         } finally {
@@ -47,7 +54,7 @@ public class ProductServiceController {
         log.info("Started fetching products by {} id", id);
         long stamp = stampedLock.readLock();
         try {
-            var productDto = productService.findProductById(id);
+            var productDto = getProductById(id);
             log.info("Products returned for the {} id is {}", id, productDto);
             return new ResponseEntity<>(writer.writeValueAsString(productDto), HttpStatus.OK);
         } finally {
@@ -61,7 +68,7 @@ public class ProductServiceController {
         log.info("Updating the product id {} and the payload is {}", id, productPayload);
         long stamp = stampedLock.writeLock();
         try {
-            var productDto = productService.findProductById(id);
+            var productDto = getProductById(id);
             productDto.setName(productPayload.getName());
             productDto.setCurrentPrice(productPayload.getCurrentPrice());
             productService.saveProduct(productDto);
@@ -84,5 +91,12 @@ public class ProductServiceController {
         }finally {
             stampedLock.unlock(stamp);
         }
+    }
+
+    public List<ProductDto> getProducts() {
+        return productService.getAllProducts();
+    }
+    private ProductDto getProductById(@PathVariable int id) throws JsonProcessingException, ProductNotFoundException {
+        return productService.findProductById(id);
     }
 }
