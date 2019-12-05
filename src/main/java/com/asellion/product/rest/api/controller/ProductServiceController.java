@@ -96,7 +96,7 @@ public class ProductServiceController {
     public List<ProductDto> getProducts() {
         return productService.getAllProducts();
     }
-    private ProductDto getProductById(@PathVariable int id) throws JsonProcessingException, ProductNotFoundException {
+    public ProductDto getProductById(@PathVariable int id) throws JsonProcessingException, ProductNotFoundException {
         return productService.findProductById(id);
     }
 }

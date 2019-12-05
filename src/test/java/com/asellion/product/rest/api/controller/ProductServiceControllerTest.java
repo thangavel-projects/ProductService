@@ -21,6 +21,9 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -33,6 +36,8 @@ class ProductServiceControllerTest {
 
     private static List<ProductDto> productDtoList;
 
+    private static ProductDto productDto;
+
     @BeforeAll
     static void setUp(){
         productServiceController = new ProductServiceController(productService);
@@ -40,6 +45,8 @@ class ProductServiceControllerTest {
                 , new ProductDto(2, "iPhone10", 3718.95, LocalDateTime.now())
                 , new ProductDto(3, "HuaweiP20", 1098.51, LocalDateTime.now())
                 , new ProductDto(4, "PlueOne", 856.00, LocalDateTime.now()));
+
+        productDto = new ProductDto(1, "SamsungS8", 2002.86, LocalDateTime.now());
     }
 
     @Test
@@ -66,4 +73,25 @@ class ProductServiceControllerTest {
         assertThat(products.size(), equalTo(4));
 
     }
+
+    @Test
+    void checkProductByIdReturnsData() throws JsonProcessingException, ProductNotFoundException {
+        when(productService.findProductById(anyInt())).thenReturn(productDto);
+        ProductDto product= productServiceController.getProductById(1);
+        assertThat(product, hasProperty("name", equalTo("SamsungS8")));
+    }
+
+    @Test
+    void verifyProductUpdates() throws JsonProcessingException, ProductNotFoundException {
+        when(productService.findProductById(1)).thenReturn(productDto);
+        productServiceController.updateProductDetails(1,productDto);
+        verify(productService).saveProduct(productDto);
+    }
+
+    @Test
+    void verifyCreateProduct() throws JsonProcessingException {
+        productServiceController.createProduct(productDto);
+        verify(productService, times(2)).saveProduct(productDto);
+    }
+
 }
