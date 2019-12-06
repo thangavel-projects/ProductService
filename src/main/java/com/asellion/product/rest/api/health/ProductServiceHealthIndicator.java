@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2019, Asellion. All rights reserved.
+ *
+ */
 package com.asellion.product.rest.api.health;
 
 import com.asellion.product.rest.api.service.ProductService;
@@ -8,6 +12,12 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+/**
+ * This {@code} ProductServiceExceptionHandler class responsible handling other exceptions such as Bad Request, Internal
+ * Server Error, and Product Not Found.
+ */
+
 
 @Component
 @Slf4j

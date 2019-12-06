@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2019, Asellion. All rights reserved.
+ *
+ */
 package com.asellion.product.rest.api.domain;
 
 import lombok.Data;
@@ -8,6 +12,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+/***
+ * This {@code} USER class responsible handling user details data for storage in DB
+ */
 
 @Data
 @Entity

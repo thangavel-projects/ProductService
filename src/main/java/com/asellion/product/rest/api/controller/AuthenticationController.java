@@ -1,5 +1,8 @@
+/*
+ * Copyright (c) 2019, Asellion. All rights reserved.
+ *
+ */
 package com.asellion.product.rest.api.controller;
-
 
 import com.asellion.product.rest.api.exception.InvalidCredentialsException;
 import com.asellion.product.rest.api.security.JWTRequest;
@@ -17,6 +20,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * The {@code} AuthenticationController class responsible for authenticating user details
+ * with from database and returns whether it's valid or not.
+ */
+
 
 @RestController
 @CrossOrigin
@@ -31,6 +39,16 @@ public class AuthenticationController {
     @Autowired
     private JWTUserService userService;
 
+    AuthenticationController(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+    }
+
+    /**
+     * Check whether valid credentials if not throws invalid message to user.
+     * @param authenticationRequest
+     * @return ResponseEntity
+     * @throws InvalidCredentialsException
+     */
 
     @PostMapping("/authenticate")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JWTRequest authenticationRequest) throws InvalidCredentialsException {
@@ -39,7 +57,7 @@ public class AuthenticationController {
         final String token = jwtTokenUtil.generateToken(userDetails);
         return ResponseEntity.ok(new JWTResponse(token));
     }
-    private void authenticate(String username, String password) throws InvalidCredentialsException {
+    void authenticate(String username, String password) throws InvalidCredentialsException {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         } catch (BadCredentialsException e) {

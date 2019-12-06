@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2019, Asellion. All rights reserved.
+ *
+ */
 package com.asellion.product.rest.api.security;
 
 import com.asellion.product.rest.api.service.JWTUserService;

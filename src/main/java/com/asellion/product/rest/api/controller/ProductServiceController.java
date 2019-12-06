@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2019, Asellion. All rights reserved.
+ *
+ */
 package com.asellion.product.rest.api.controller;
 
 import com.asellion.product.rest.api.dto.ProductDto;
@@ -21,6 +25,11 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.concurrent.locks.StampedLock;
 
+/**
+ * The {@code} ProductServiceController handles all GET, POST and PUT method calls
+ * for creating, updating resources through secured end point url.
+ */
+
 @RestController
 @RequestMapping("/api")
 @Slf4j
@@ -35,6 +44,12 @@ public class ProductServiceController {
         this.productService = productService;
     }
 
+    /**
+     * Invoke H2 DB and returns all the products and throws exception if any error
+     * @return String
+     * @throws JsonProcessingException
+     */
+
     @GetMapping(value = "/products", produces = "application/json")
     public ResponseEntity<String> getAllProducts() throws JsonProcessingException {
         log.info("Started fetching all products from DB!");
@@ -47,6 +62,12 @@ public class ProductServiceController {
             stampedLock.unlock(stamp);
         }
     }
+
+    /**
+     * Invoke H2 DB and returns particular products based on ID and throws exception if any error
+     * @return String
+     * @throws JsonProcessingException
+     */
 
     @GetMapping(value = "/products/{id}", produces = "application/json")
     public ResponseEntity<String> getProductsById(@PathVariable int id) throws JsonProcessingException,
@@ -61,6 +82,12 @@ public class ProductServiceController {
             stampedLock.unlock(stamp);
         }
     }
+
+    /**
+     * Invoke H2 DB and updates particular products based on ID and throws exception if any error
+     * @return String
+     * @throws JsonProcessingException
+     */
 
     @PutMapping(value = "/products/{id}", consumes = "application/json")
     public ResponseEntity<String> updateProductDetails(@PathVariable int id, @Valid @RequestBody ProductDto productPayload)
@@ -78,6 +105,12 @@ public class ProductServiceController {
             stampedLock.unlock(stamp);
         }
     }
+
+    /**
+     * Create a product in the H2 DB and throws exception if any error
+     * @return String
+     * @throws JsonProcessingException
+     */
 
     @PostMapping(value = "/products", consumes = "application/json")
     public ResponseEntity<String> createProduct(@Valid @RequestBody ProductDto productDto) throws JsonProcessingException {
