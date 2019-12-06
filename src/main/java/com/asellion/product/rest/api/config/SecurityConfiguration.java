@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2019, Asellion. All rights reserved.
+ *
+ */
 package com.asellion.product.rest.api.config;
 
 import com.asellion.product.rest.api.security.JWTRequestFilter;
@@ -18,6 +22,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+/**
+ * The {@code} SecurityConfiguration class responsible for whitelisting and blacklisting urls
+ */
 
 @Configuration
 @EnableWebSecurity
@@ -54,7 +62,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-
+    /**
+     * Whitelisting urls to access without any authentication
+     * @param web
+     * @throws Exception
+     */
     @Override
     public void configure(WebSecurity web) throws Exception {
             web
@@ -63,6 +75,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/h2/**")
                 .antMatchers("/view/**");
     }
+
+    /**
+     * Blacklisting urls to access with any authentication
+     * @param httpSecurity
+     * @throws Exception
+     */
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
