@@ -119,7 +119,7 @@ public class ProductServiceController {
             stampedLock.unlock(stamp);
         }
     }
-
+    // The below 2 methods are public because of Unit Testing
     public List<ProductDto> getProducts() {
         return productService.getAllProducts();
     }
