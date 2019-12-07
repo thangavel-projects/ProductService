@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -24,10 +25,9 @@ public class JWTUserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
         User user = userRepository.findByName(userName);
         log.info("Fetching {} User Detail from DB", userName);
-        if(user == null){
-            throw new UsernameNotFoundException("User details not found for " + userName);
-        }
-        return new org.springframework.security.core.userdetails.User(user.getName(), user.getPassword(),
-                new ArrayList<>());
+        return Optional.ofNullable(user)
+                .map(a -> new org.springframework.security.core.userdetails.User(a.getName(),
+                        a.getPassword(), new ArrayList<>()))
+                .orElseThrow(() -> new UsernameNotFoundException("User details not found for " + userName));
     }
 }
