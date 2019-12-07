@@ -8,6 +8,7 @@ import com.asellion.product.rest.api.security.JWTRequestFilter;
 import com.asellion.product.rest.api.security.SecurityEntryPoint;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,6 +32,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+    @Value("${spring.boot.heath.check}")
+    private String healthCheck;
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -84,38 +88,41 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity
-                .authorizeRequests()
-                .antMatchers("/*")
-                .permitAll()
-                .and()
-                .authorizeRequests()
-                .antMatchers("/console/**")
-                .permitAll()
-                .antMatchers("/instances/**")
-                .permitAll()
-                .antMatchers("/actuator/**")
-                .permitAll();
 
-        httpSecurity
-                .csrf()
-                .disable()
-                .authorizeRequests()
-                .antMatchers("/authenticate")
-                .permitAll()
-                .anyRequest()
-                .authenticated()
-                .and()
-                .exceptionHandling()
+        if("disable".equalsIgnoreCase(healthCheck)) {
+            httpSecurity
+                    .authorizeRequests()
+                    .antMatchers("/*")
+                    .permitAll()
+                    .and()
+                    .authorizeRequests()
+                    .antMatchers("/console/**")
+                    .permitAll()
+                    .antMatchers("/instances/**")
+                    .permitAll()
+                    .antMatchers("/actuator/**")
+                    .permitAll()
+                    .and()
+                    .csrf()
+                    .disable()
+                    .authorizeRequests()
+                    .antMatchers("/authenticate")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated()
+                    .and()
+                    .exceptionHandling()
+                    .authenticationEntryPoint(securityEntryPoint)
+                    .and()
+                    .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+            httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+            httpSecurity.headers().frameOptions().disable();
+        }else {
+            httpSecurity.authorizeRequests().anyRequest().permitAll()
+                    .and().csrf().disable();
+        }
 
-                .authenticationEntryPoint(securityEntryPoint)
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-
-        httpSecurity.headers().frameOptions().disable();
     }
 }
 

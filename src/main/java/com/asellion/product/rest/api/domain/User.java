@@ -4,6 +4,7 @@
  */
 package com.asellion.product.rest.api.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -18,6 +19,7 @@ import javax.persistence.Table;
 
 @Data
 @Entity
+@AllArgsConstructor
 @Table(name = "USER_DETAILS")
 public class User {
 

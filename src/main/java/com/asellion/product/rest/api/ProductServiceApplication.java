@@ -9,6 +9,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * The {@code} ProductServiceApplication responsible for start up tomcat
+ * server and spring boot admin.
+ */
 @EnableAdminServer
 @Configuration
 @SpringBootApplication

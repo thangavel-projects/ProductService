@@ -23,7 +23,7 @@ public class JWTUserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
         User user = userRepository.findByName(userName);
-        log.info("Fetching {} User Detail from DB", user);
+        log.info("Fetching {} User Detail from DB", userName);
         if(user == null){
             throw new UsernameNotFoundException("User details not found for " + userName);
         }

@@ -1,23 +1,25 @@
 package com.asellion.product.rest.api.controller;
 
 import com.asellion.product.rest.api.exception.InvalidCredentialsException;
+import com.asellion.product.rest.api.security.JWTRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.AuthenticationManager;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
 class AuthenticationControllerTest {
 
-    private static final AuthenticationManager authenticationManager = Mockito.mock(AuthenticationManager.class);
+    private static final AuthenticationManager authenticationManager = mock(AuthenticationManager.class);
+    private static final JWTRequest jwtRequest = mock(JWTRequest.class);
 
     private static final String TEST_USER_NAME = "testUserName";
     private static final String TEST_PASSWORD = "testPassword";

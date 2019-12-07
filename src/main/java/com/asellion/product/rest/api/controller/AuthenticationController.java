@@ -39,6 +39,7 @@ public class AuthenticationController {
     @Autowired
     private JWTUserService userService;
 
+
     AuthenticationController(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
@@ -53,10 +54,15 @@ public class AuthenticationController {
     @PostMapping("/authenticate")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JWTRequest authenticationRequest) throws InvalidCredentialsException {
         authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
-        final UserDetails userDetails = userService.loadUserByUsername(authenticationRequest.getUsername());
+        final UserDetails userDetails = getUserDetails(authenticationRequest);
         final String token = jwtTokenUtil.generateToken(userDetails);
         return ResponseEntity.ok(new JWTResponse(token));
     }
+
+    public UserDetails  getUserDetails(@RequestBody JWTRequest authenticationRequest) {
+        return userService.loadUserByUsername(authenticationRequest.getUsername());
+    }
+
     void authenticate(String username, String password) throws InvalidCredentialsException {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
