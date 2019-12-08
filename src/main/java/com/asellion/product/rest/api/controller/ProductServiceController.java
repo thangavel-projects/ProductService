@@ -108,7 +108,7 @@ public class ProductServiceController {
 
     @PostMapping(value = "/products", consumes = "application/json")
     public ResponseEntity<String> createProduct(@Valid @RequestBody ProductDto productDto) throws JsonProcessingException {
-        log.info("Creating product process is {} started", productDto);
+        log.info("Creating product process is {} started", productDto.getName());
         long stamp = stampedLock.writeLock();
         try {
             productService.saveProduct(productDto);

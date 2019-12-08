@@ -4,6 +4,7 @@
  */
 package com.asellion.product.rest.api.config;
 
+import com.asellion.product.rest.api.constant.ServiceConstant;
 import com.asellion.product.rest.api.security.JWTRequestFilter;
 import com.asellion.product.rest.api.security.SecurityEntryPoint;
 import org.modelmapper.ModelMapper;
@@ -75,9 +76,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
             web
                 .ignoring()
-                .antMatchers("/console/**")
-                .antMatchers("/h2/**")
-                .antMatchers("/view/**");
+                .antMatchers(ServiceConstant.CONSOLE_URL_PATTERN.getValue())
+                .antMatchers(ServiceConstant.H2_URL_PATTERN.getValue())
+                .antMatchers(ServiceConstant.VIEW_URL_PATTERN.getValue());
     }
 
     /**
@@ -89,24 +90,24 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
 
-        if("disable".equalsIgnoreCase(healthCheck)) {
+        if(ServiceConstant.HEALTH_CHECK_DISABLED.getValue().equalsIgnoreCase(healthCheck)) {
             httpSecurity
                     .authorizeRequests()
-                    .antMatchers("/*")
+                    .antMatchers(ServiceConstant.ALL_REQUEST_URL_PATTERN.getValue())
                     .permitAll()
                     .and()
                     .authorizeRequests()
-                    .antMatchers("/console/**")
+                    .antMatchers(ServiceConstant.CONSOLE_URL_PATTERN.getValue())
                     .permitAll()
-                    .antMatchers("/instances/**")
+                    .antMatchers(ServiceConstant.INSTANCE_URL_PATTERN.getValue())
                     .permitAll()
-                    .antMatchers("/actuator/**")
+                    .antMatchers(ServiceConstant.ACTUATOR_URL_PATTERN.getValue())
                     .permitAll()
                     .and()
                     .csrf()
                     .disable()
                     .authorizeRequests()
-                    .antMatchers("/authenticate")
+                    .antMatchers(ServiceConstant.AUTHENTICATE_URL_PATTERN.getValue())
                     .permitAll()
                     .anyRequest()
                     .authenticated()
